@@ -1,0 +1,11 @@
+FROM mariadb:11
+
+COPY init/*.sql /docker-entrypoint-initdb.d/
+
+# 추가 설정 더 넣을 수 있음
+RUN echo "[mysqld]" > /etc/mysql/conf.d/prod.cnf && \
+    echo "max_connections=200" >> /etc/mysql/conf.d/prod.cnf && \
+    echo "innodb_buffer_pool_size=1G" >> /etc/mysql/conf.d/prod.cnf && \
+    echo "slow_query_log=1" >> /etc/mysql/conf.d/prod.cnf
+
+EXPOSE 3307
