@@ -1,0 +1,11 @@
+FROM postgres:16-alpine
+
+# 프로덕션 설정 파일 복사
+COPY postgresql.conf /etc/postgresql/postgresql.conf
+COPY pg_hba.conf /etc/postgresql/pg_hba.conf
+
+COPY init/*.sql /docker-entrypoint-initdb.d/
+
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+EXPOSE 5432

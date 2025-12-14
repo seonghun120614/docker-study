@@ -6,7 +6,9 @@
 
 `db-exam/msyql` 에 위치, `mysql:8.0` 사용
 
-### 실행
+### Execution
+
+#### 실행
 
 ```bash
 cd db-exam/mysql
@@ -18,12 +20,12 @@ chmod +x build_and_start.sh
 ./build_and_start.sh
 ```
 
-### 테스트
+#### 테스트
 
 **접속**
 ```bash
 # 컨테이너 접속
-docker exec -it $(docker ps -aq -f ancestor="my-mysql-image:1.0") mysql -uroot -p
+docker exec -it $(docker ps -aq -f ancestor="my-mysql-image:1.0") mysql -u testuser -p
 
 # DB 접속 및 테이블 존재 확인
 SHOW DATABASES;
@@ -46,4 +48,40 @@ mysql> SELECT * FROM test_table1;
 ```
 
 ## Database Postgres
+
+`db-exam/postgres` 에 위치, `postgres:16-alpine` 사용, conf 파일은 그때그때 필요 시 공식 문서 참고 후 설정
+
+### Execution
+
+#### 실행
+
+```bash
+cd db-exam/postgres
+
+# 필요 시
+chmod +x build_and_start.sh
+
+# dev 모드로 시작
+./build_and_start.sh
+```
+
+#### 테스트
+
+**접속**
+```bash
+docker exec -it $(docker ps -q -f ancestor=my-postgres-image:1.0) psql -U testuser -d testdb
+
+# tables 확인
+\dt
+```
+
+**출력**
+```
+testdb=> \dt
+            List of tables
+ Schema |    Name     | Type  | Owner 
+--------+-------------+-------+-------
+ public | test_table1 | table | root
+(1 row)
+```
 
