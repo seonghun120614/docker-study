@@ -136,6 +136,8 @@ MariaDB [testdb]> select * from test_table1;
 3 rows in set (0.013 sec)
 ```
 
+---
+
 ## Database MongoDB
 
 `db-exam/mariadb` 에 위치, `mongodb:7` 사용, 3307 포트 사용
@@ -201,4 +203,105 @@ testdb> db.test_table1.find().limit(10).pretty()
     available: true
   }
 ]
+```
+
+---
+
+## Database Redis
+
+`db-exam/redis` 에 위치, `redis:7-alpine` 사용, 6379 포트 사용
+
+**Spring 연결**
+```yml
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 1234
+```
+
+> 필요 시 Docker service 명으로 host 바꾸기
+
+### Execution
+
+#### 개발 모드 실행
+
+```bash
+cd db-exam/redis
+
+# 필요 시
+chmod +x build_and_start.sh
+
+# dev 모드로 시작
+./build_and_start.sh
+```
+
+#### 접속 테스트
+
+**접속**
+```bash
+docker exec -it $(docker ps -aq -f ancestor="my-redis-image:1.0") redis-cli -a 1234 --no-auth-warning
+
+# 키 개수
+DBSIZE
+
+# 만료 시간 설정 (TTL)
+SET session:user123 "token_abc" EX 3600
+TTL session:user123
+```
+
+**기본 명령어 실행**
+```bash
+# 키 존재 확인
+EXISTS name
+
+# 키 삭제
+DEL name
+
+# 키 생성
+SET name "seonghun"
+
+# 키 조회
+GET name
+```
+
+**수치형 변수 증감 연산**
+```bash
+SET counter 0
+
+INCR counter
+GET counter       # 1
+
+INCRBY counter 5
+GET counter       # 6
+
+DECR counter
+GET counter       # 5
+```
+
+**만료 시간 설정 (TTL)**
+```bash
+SET session:user123 "token_abc" EX 3600     # 키는 session:user123 이고, value 는 "token_abc" 이며 만료 시간은 3600초
+TTL session:user123     # 남은 시간 확인
+
+### MULTI 명령어 사용
+# 여러 키 한 번에 설정
+MSET key1 "value1" key2 "value2" key3 "value3"
+
+# 여러 키 한 번에 조회
+MGET key1 key2 key3
+
+# 모든 키 조회
+KEYS *
+```
+
+**출력**
+```
+127.0.0.1:6379> DBSIZE
+(integer) 0
+127.0.0.1:6379> SET session:user123 "token_abc" EX 3600
+OK
+127.0.0.1:6379> TTL session:user123
+(integer) 3594
 ```
