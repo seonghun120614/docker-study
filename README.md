@@ -15,7 +15,7 @@ cd db-exam/mysql
 chmod +x build_and_start.sh
 
 # dev 모드로 시작
-./build_and_start.sh --dev
+./build_and_start.sh
 ```
 
 ### 테스트
